@@ -149,6 +149,10 @@ for command in sys.stdin:
     assert.equal(await pluginFrame.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'Mobile frame overflow');
     await page.goto(base+'/overview');
     await wait(800);
+    await page.setViewportSize({width:1280,height:800});
+    await page.goto(base+'/plugins');
+    await wait(1200);
+    await page.screenshot({path:path.join(project,'.verification/screenshots/plugins-page.png')});
     assert.equal((await api('GET','/v1/servers')).servers.filter(s=>s.state==='online').length,2,'Closing plugin page stopped servers');
     assert.deepEqual(errors,[],'Browser runtime errors');
     console.log(JSON.stringify({sandbox:true,cards:2,console:true,tabs:9,download:true,editor:true,typedConfirm:true,config:true,power:true,backup:true,mobile:true,persistentAfterNavigation:true,browserErrors:errors}));
