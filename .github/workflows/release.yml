@@ -1,0 +1,77 @@
+# Publishes a release when a version tag is pushed:
+#
+#   git tag -a v1.2.0 -m "1.2.0" && git push origin v1.2.0
+#
+# The tag must equal the version in plugin/manifest.json and package.json.
+# Assets: <id>-<version>.tar.gz (one top folder <id>/, unsigned manifest) and
+# <id>-<version>.tar.gz.sha256. The Ervisio plugin registry (Ervisio/plugins)
+# picks the release up, reviews it, signs it with the Ervisio team key and
+# lists it in the marketplace. No secrets are needed here.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+env:
+  ERVISIO_REF: v0.4.0
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install
+        run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Build
+        run: npm run build
+      - name: Pack (checks tag = manifest version = package.json version)
+        run: npm run pack
+      - uses: actions/checkout@v4
+        with:
+          repository: Ervisio/ervisio
+          ref: ${{ env.ERVISIO_REF }}
+          path: .ervisio-core
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: .ervisio-core/server/go.mod
+          cache: false
+      - name: Validate the manifest (Ervisio's own checks, throwaway key)
+        run: |
+          (cd .ervisio-core/server && CGO_ENABLED=0 go build -o "$RUNNER_TEMP/plugin-sign" ./internal/modules/plugins/cmd/plugin-sign)
+          id="$(node -p "require('./plugin/manifest.json').id")"
+          version="$(node -p "require('./plugin/manifest.json').version")"
+          echo "ID=$id" >> "$GITHUB_ENV"; echo "VERSION=$version" >> "$GITHUB_ENV"
+          (cd dist && sha256sum -c "$id-$version.tar.gz.sha256")
+          V="$RUNNER_TEMP/validate"; mkdir -p "$V"
+          tar -xzf "dist/$id-$version.tar.gz" -C "$V"
+          test "$(ls "$V")" = "$id"
+          if [ -n "$(find "$V" ! -type f ! -type d)" ]; then echo "links or special files in the tarball"; exit 1; fi
+          pub="$("$RUNNER_TEMP/plugin-sign" -genkey "$RUNNER_TEMP/throwaway.key" | sed -n 's/^public key: //p')"
+          "$RUNNER_TEMP/plugin-sign" -key "$RUNNER_TEMP/throwaway.key" "$V/$id"
+          "$RUNNER_TEMP/plugin-sign" -verify -pub "$pub" "$V/$id"
+          rm -f "$RUNNER_TEMP/throwaway.key"
+      - name: Release notes (CHANGELOG.md section of this version)
+        run: |
+          notes="$RUNNER_TEMP/notes.md"
+          awk -v v="$VERSION" '
+            /^## / { if (p) exit; h=$0; sub(/^## +\[?v?/, "", h); gsub(/\]/, " ", h); split(h, a, /[ \t(]+/); if (a[1] == v) { p=1; next } }
+            p { print }' CHANGELOG.md > "$notes"
+          if ! grep -q '[^[:space:]]' "$notes"; then echo "::error::CHANGELOG.md has no section for $VERSION"; exit 1; fi
+          cat "$notes"
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" --verify-tag --title "$ID $VERSION" --notes-file "$RUNNER_TEMP/notes.md" \
+            "dist/$ID-$VERSION.tar.gz" "dist/$ID-$VERSION.tar.gz.sha256"

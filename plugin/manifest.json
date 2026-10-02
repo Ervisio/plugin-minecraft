@@ -1,0 +1,99 @@
+{
+  "id": "minecraft",
+  "name": "Minecraft",
+  "version": "0.1.0",
+  "author": "Ervisio team",
+  "description": "Manage multiple Java Minecraft servers, console, files, software, add-ons, players, worlds and backups.",
+  "homepage": "https://github.com/Ervisio/plugin-minecraft",
+  "icon": "server",
+  "color": "file",
+  "entry": "index.js",
+  "capabilities": {
+    "http": [
+      {
+        "name": "minecraft",
+        "socket": "/run/ervisio-minecraft/control.sock",
+        "admin": true,
+        "adminUnlessGroup": "ervisio-minecraft",
+        "headers": [
+          "Content-Type"
+        ],
+        "rules": [
+          {
+            "methods": [
+              "GET"
+            ],
+            "path": "/v1/(health|servers|jobs|activity|catalog/(versions|loaders|addons))"
+          },
+          {
+            "methods": [
+              "POST"
+            ],
+            "path": "/v1/servers"
+          },
+          {
+            "methods": [
+              "GET",
+              "PATCH",
+              "DELETE"
+            ],
+            "path": "/v1/servers/[a-z0-9-]+"
+          },
+          {
+            "methods": [
+              "GET"
+            ],
+            "path": "/v1/servers/[a-z0-9-]+/(logs|files|file|properties|addons|players|worlds|backups|backup-file|schedules)"
+          },
+          {
+            "methods": [
+              "POST"
+            ],
+            "path": "/v1/servers/[a-z0-9-]+/(power|command|files|software|addons|players|worlds|backups)"
+          },
+          {
+            "methods": [
+              "PUT"
+            ],
+            "path": "/v1/servers/[a-z0-9-]+/(file|properties|schedules)"
+          },
+          {
+            "methods": [
+              "PATCH"
+            ],
+            "path": "/v1/servers/[a-z0-9-]+/file"
+          }
+        ],
+        "maxBody": 1048576,
+        "timeoutSec": 60
+      }
+    ],
+    "sockets": [
+      "/run/ervisio-minecraft/control.sock"
+    ]
+  },
+  "contributes": {
+    "pages": [
+      {
+        "id": "minecraft",
+        "title": "Minecraft",
+        "icon": "server"
+      }
+    ],
+    "widgets": [
+      {
+        "id": "servers",
+        "title": "Minecraft servers",
+        "icon": "server"
+      }
+    ]
+  },
+  "visibleTo": {
+    "groups": [
+      "ervisio-minecraft",
+      "wheel",
+      "sudo",
+      "admin"
+    ]
+  }
+}

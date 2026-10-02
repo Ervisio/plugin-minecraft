@@ -1,0 +1,67 @@
+# Builds the plugin, runs the runtime tests, makes the release tarball and validates its manifest
+# with the validator of Ervisio itself (plugin-sign from Ervisio/ervisio).
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  # The Ervisio release whose manifest validator is used.
+  ERVISIO_REF: v0.4.0
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install
+        run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Pack
+        run: npm run pack
+      - uses: actions/checkout@v4
+        with:
+          repository: Ervisio/ervisio
+          ref: ${{ env.ERVISIO_REF }}
+          path: .ervisio-core
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: .ervisio-core/server/go.mod
+          cache: false
+      - name: Validate the manifest (Ervisio's own checks, throwaway key)
+        run: |
+          (cd .ervisio-core/server && CGO_ENABLED=0 go build -o "$RUNNER_TEMP/plugin-sign" ./internal/modules/plugins/cmd/plugin-sign)
+          id="$(node -p "require('./plugin/manifest.json').id")"
+          version="$(node -p "require('./plugin/manifest.json').version")"
+          tgz="dist/$id-$version.tar.gz"
+          (cd dist && sha256sum -c "$id-$version.tar.gz.sha256")
+          V="$RUNNER_TEMP/validate"; mkdir -p "$V"
+          tar -xzf "$tgz" -C "$V"
+          test "$(ls "$V")" = "$id"
+          if [ -n "$(find "$V" ! -type f ! -type d)" ]; then echo "links or special files in the tarball"; exit 1; fi
+          # Signing runs the full manifest validation; the key is thrown away.
+          pub="$("$RUNNER_TEMP/plugin-sign" -genkey "$RUNNER_TEMP/throwaway.key" | sed -n 's/^public key: //p')"
+          "$RUNNER_TEMP/plugin-sign" -key "$RUNNER_TEMP/throwaway.key" "$V/$id"
+          "$RUNNER_TEMP/plugin-sign" -verify -pub "$pub" "$V/$id"
+          rm -f "$RUNNER_TEMP/throwaway.key"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin
+          path: dist/*.tar.gz*
+          retention-days: 7
