@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+* The logo is now the Minecraft grass block, the game's own icon (vector version from Wikimedia Commons, public domain; Minecraft is a trademark of Mojang).
+
 ## 0.1.0
 
 Initial Minecraft Java server manager for Ervisio (plugin SDK contract 3).

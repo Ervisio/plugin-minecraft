@@ -92,4 +92,6 @@ reviews and signs it.
 
 ## License
 
-MIT. Minecraft is a trademark of Mojang Synergies AB; this project is not affiliated with Mojang or Microsoft.
+MIT. The logo is the Minecraft grass block icon, from the public-domain vector drawing
+[Minecraft cube.svg](https://commons.wikimedia.org/wiki/File:Minecraft_cube.svg) by Albin Olsson. Minecraft is a
+trademark of Mojang Synergies AB; this project is not affiliated with Mojang or Microsoft.
