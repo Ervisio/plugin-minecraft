@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v",
     "pack": "ervisio-plugin-pack pack",
-    "check": "npm run typecheck && npm test"
+    "check": "npm run typecheck && npm test",
+    "release": "node .github/release.mjs",
+    "marketplace": "node .github/release.mjs register"
   },
   "devDependencies": {
     "@ervisio/plugin-sdk": "github:Ervisio/plugin-sdk#v0.1.0",
