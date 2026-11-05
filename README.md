@@ -6,7 +6,7 @@ backups and daily schedules. English and Italian interface.
 
 The plugin has two parts:
 
-* **The page** (this repository's `src/`): an Ervisio plugin (SDK contract 3) that runs in Ervisio's sandboxed frame.
+* **The page** (this repository's `src/`): an Ervisio plugin (SDK contract 4) that runs in Ervisio's sandboxed frame.
 * **The runtime** (`plugin/runtime/`): a small Python service, `ervisio-minecraft`, that owns the Java processes, so
   servers keep running when nobody has the page open. It runs as its own non-root account and answers only on the Unix
   socket `/run/ervisio-minecraft/control.sock`, which the plugin's manifest declares as an HTTP capability.
@@ -100,4 +100,4 @@ trademark of Mojang Synergies AB; this project is not affiliated with Mojang or 
 
 When the account uses ErvisiOS, this plugin opens a native desktop workspace with a persistent server list, an inline server console and tabs for files, software, add-ons, players, worlds, backups and schedules. Power controls, job progress and error handling use the same runtime API as Classic. The original page and its drawer remain available in Classic.
 
-The page opts in with `contributes.pages[].ervisios.view: "minecraft-desktop"` and registers both views from the same entry module. It requires an Ervisio build that supports native ErvisiOS plugin views. No additional server permissions are requested.
+The page opts in with `contributes.pages[].ervisios.view: "minecraft-desktop"` and registers both views from the same entry module. This version requires Ervisio 0.7.0 or later and builds with plugin SDK 0.4.0 (contract 4). No additional server permissions are requested.

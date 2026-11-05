@@ -10,7 +10,7 @@ permissions:
 
 env:
   # The Ervisio release whose manifest validator is used.
-  ERVISIO_REF: feat/ervisios
+  ERVISIO_REF: v0.7.0
 
 jobs:
   build:
