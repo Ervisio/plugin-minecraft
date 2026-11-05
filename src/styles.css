@@ -229,3 +229,39 @@
 .mc-root.mc-widget { padding:0; --mc-item: var(--sunk); }
 @media(max-width:900px) { .mc-root { padding:12px 12px 24px; } }
 @media(prefers-reduced-motion:reduce){.mc-root *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Native ErvisiOS workspace: persistent server navigation and inline tools.
+   Classic retains its original cards and modal detail drawer. */
+.mc-desktop { padding:0; display:flex; flex-direction:column; min-height:100%; --mc-panel:var(--surface); --mc-item:var(--sunk); }
+.mc-desktop .mc-header { min-height:60px; margin:0; padding:10px 16px; border-bottom:1px solid color-mix(in srgb,var(--ink) 10%,transparent); background:color-mix(in srgb,var(--surface) 80%,var(--sunk)); }
+.mc-desktop .mc-brand-mark { width:34px; height:34px; border-radius:8px; }
+.mc-desktop h1 { font-size:17px; letter-spacing:normal; }
+.mc-desktop .mc-brand p { font-size:11px; }
+.mc-desktop .mc-layout { flex:1; align-items:stretch; gap:0; }
+.mc-desktop .mc-sidebar { position:static; width:218px; border-radius:0; min-height:0; padding:12px 8px; background:var(--sunk); border-right:1px solid color-mix(in srgb,var(--ink) 10%,transparent); }
+.mc-desktop .mc-sidebar-caption { text-transform:none; letter-spacing:normal; font-size:11px; padding:8px; }
+.mc-desktop .mc-nav { min-height:35px; border-radius:6px; font-size:12px; padding:7px 9px; }
+.mc-desktop .mc-main { padding:16px; overflow:auto; }
+.mc-desktop .mc-panel { padding:0; border-radius:0; }
+.mc-desktop-serverlist { display:flex; flex-direction:column; gap:4px; margin-top:12px; }
+.mc-desktop-serverlist .mc-input { min-height:32px; padding:7px 8px; border-radius:5px; margin-bottom:5px; font-size:12px; background:var(--surface); }
+.mc-desktop-server { display:flex; align-items:center; gap:9px; width:100%; text-align:left; border:0; padding:9px 8px; border-radius:6px; color:var(--ink); background:transparent; }
+.mc-desktop-server:hover { background:var(--surface); }
+.mc-desktop-server.active { background:var(--mc-accent-soft); color:var(--mc-accent-text); }
+.mc-desktop-server>span { display:grid; gap:2px; flex:1; min-width:0; }
+.mc-desktop-server b { font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mc-desktop-server small { font-size:10px; }
+.mc-desktop-detail { min-width:0; }
+.mc-desktop-breadcrumb { display:flex; align-items:center; gap:7px; color:var(--ink2); font-size:11px; margin:0 0 20px; }
+.mc-desktop-breadcrumb button,.mc-desktop-status button { border:0; padding:0; background:transparent; color:var(--mc-accent-text); }
+.mc-desktop .mc-detail-head { padding:0 0 14px; margin:0; }
+.mc-desktop .mc-detail-name h2 { font-size:20px; }
+.mc-desktop .mc-tabs { border-radius:0; background:transparent; border-bottom:1px solid color-mix(in srgb,var(--ink) 10%,transparent); padding:0 0 5px; margin-top:7px; }
+.mc-desktop .mc-tabs button { border-radius:5px; font-weight:500; font-size:11px; }
+.mc-desktop .mc-button { border-radius:6px; min-height:32px; font-size:12px; }
+.mc-desktop .mc-card-grid { grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr)); }
+.mc-desktop .mc-server-card { border-radius:9px; }
+.mc-desktop-status { display:flex; gap:16px; align-items:center; min-height:30px; padding:6px 14px; border-top:1px solid color-mix(in srgb,var(--ink) 10%,transparent); color:var(--ink2); font-size:10px; background:var(--sunk); }
+.mc-desktop-status span:nth-child(2) { margin-left:auto; }
+@media(max-width:720px) { .mc-desktop .mc-layout{flex-direction:column} .mc-desktop .mc-sidebar{width:100%;display:flex;flex-direction:row;flex-wrap:wrap;border-right:0} .mc-desktop .mc-nav{width:auto} .mc-desktop .mc-sidebar-caption,.mc-desktop .mc-sidebar-footer{display:none} .mc-desktop-serverlist{width:100%;flex-direction:row;overflow:auto;margin:0} .mc-desktop-serverlist .mc-input{min-width:130px;max-width:150px;margin:4px 0} .mc-desktop-server{min-width:140px;width:auto} .mc-desktop .mc-main{padding:12px} .mc-desktop-status{flex-wrap:wrap;gap:7px} }
+@media(prefers-reduced-motion:reduce){.mc-desktop *{transition:none!important;animation:none!important}}

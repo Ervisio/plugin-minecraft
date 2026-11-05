@@ -3,6 +3,7 @@ import { getSdk } from './sdk';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  'desktop.subtitle': 'Servers, console and worlds in your ErvisiOS workspace.',
   'app.title': 'Minecraft', 'app.subtitle': 'Your worlds, under control.',
   'nav.manage': 'Manage', 'nav.servers': 'Servers', 'nav.catalog': 'Catalogue', 'nav.backups': 'Backups', 'nav.activity': 'Activity', 'nav.resources': 'Resources',
   'common.create': 'Create server', 'common.refresh': 'Refresh', 'common.loading': 'Loading…', 'common.save': 'Save', 'common.saved': 'Saved.',
@@ -112,6 +113,7 @@ const en: Dict = {
 };
 
 const it: Dict = {
+  'desktop.subtitle': 'Server, console e mondi nel tuo spazio ErvisiOS.',
   'app.title': 'Minecraft', 'app.subtitle': 'I tuoi mondi, sotto controllo.',
   'nav.manage': 'Gestione', 'nav.servers': 'Server', 'nav.catalog': 'Catalogo', 'nav.backups': 'Backup', 'nav.activity': 'Attività', 'nav.resources': 'Risorse',
   'common.create': 'Crea server', 'common.refresh': 'Aggiorna', 'common.loading': 'Caricamento…', 'common.save': 'Salva', 'common.saved': 'Salvato.',

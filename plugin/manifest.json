@@ -77,7 +77,10 @@
       {
         "id": "minecraft",
         "title": "Minecraft",
-        "icon": "server"
+        "icon": "server",
+        "ervisios": {
+          "view": "minecraft-desktop"
+        }
       }
     ],
     "widgets": [

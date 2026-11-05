@@ -95,3 +95,9 @@ reviews and signs it.
 MIT. The logo is the Minecraft grass block icon, from the public-domain vector drawing
 [Minecraft cube.svg](https://commons.wikimedia.org/wiki/File:Minecraft_cube.svg) by Albin Olsson. Minecraft is a
 trademark of Mojang Synergies AB; this project is not affiliated with Mojang or Microsoft.
+
+## ErvisiOS interface
+
+When the account uses ErvisiOS, this plugin opens a native desktop workspace with a persistent server list, an inline server console and tabs for files, software, add-ons, players, worlds, backups and schedules. Power controls, job progress and error handling use the same runtime API as Classic. The original page and its drawer remain available in Classic.
+
+The page opts in with `contributes.pages[].ervisios.view: "minecraft-desktop"` and registers both views from the same entry module. It requires an Ervisio build that supports native ErvisiOS plugin views. No additional server permissions are requested.

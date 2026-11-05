@@ -1,7 +1,7 @@
 import { setReact } from '@ervisio/plugin-sdk/react';
 import { setSdk, type PluginSDK } from './sdk';
 import { registerStrings } from './i18n';
-import { App } from './app';
+import { App, ErvisiOSApp } from './app';
 import { ServersWidget } from './widget';
 import styleText from './styles.css?inline';
 
@@ -16,5 +16,6 @@ export default function activate(sdk: PluginSDK): void {
     document.head.appendChild(style);
   }
   sdk.registerPage('minecraft', App);
+  sdk.registerPage('minecraft-desktop', ErvisiOSApp);
   sdk.registerWidget({ id: 'servers', render: ServersWidget });
 }

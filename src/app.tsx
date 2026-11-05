@@ -33,7 +33,9 @@ function useToast() {
   return { toast, show };
 }
 
-export function App() {
+export function ErvisiOSApp() { return <App desktop />; }
+
+export function App({ desktop = false }: { desktop?: boolean } = {}) {
   const [servers, setServers] = useState<Server[]>([]);
   const [health, setHealth] = useState<Health | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -111,9 +113,9 @@ export function App() {
     run(() => request('POST', `/servers/${enc(s.id)}/power`, { action }), t(`power.done.${action}`, { name: s.name }));
   const open = (s: Server) => { setSelected(s.id); setTab('console'); };
 
-  return <div className="mc-root">
+  return <div className={`mc-root${desktop ? ' mc-desktop' : ''}`}>
     <header className="mc-header">
-      <div className="mc-brand"><span className="mc-brand-mark"><Icon name="cube" size={24} /></span><div><h1>{t('app.title')}</h1><p>{t('app.subtitle')}</p></div></div>
+      <div className="mc-brand"><span className="mc-brand-mark"><Icon name="cube" size={24} /></span><div><h1>{t('app.title')}</h1><p>{desktop ? t('desktop.subtitle') : t('app.subtitle')}</p></div></div>
       <div className="mc-header-actions">
         <Button kind="primary" onClick={() => setCreateOpen(true)} disabled={!!fatal}><Icon name="plus" /> {t('common.create')}</Button>
       </div>
@@ -125,6 +127,15 @@ export function App() {
           onClick={() => { setSection(s.id); setSelected(''); }}>
           <Icon name={s.icon} size={17} />{t(`nav.${s.id}`)}{s.id === 'servers' && <b>{servers.length}</b>}
         </button>)}
+        {desktop && <div className="mc-desktop-serverlist" aria-label={t('servers.title')}>
+          <div className="mc-sidebar-caption">{t('servers.title')}</div>
+          <input className="mc-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('servers.search')} aria-label={t('servers.search')} />
+          {filtered.map((s) => <button key={s.id} type="button" className={`mc-desktop-server ${selected === s.id ? 'active' : ''}`} aria-pressed={selected === s.id}
+            onClick={() => { setSection('servers'); open(s); }}>
+            <Icon name="cube" /><span><b>{s.name}</b><small>{s.version} :{s.port}</small></span><i className={`mc-health-dot ${s.state || 'offline'}`} />
+          </button>)}
+          {!!servers.length && !filtered.length && <small>{t('servers.noMatch')}</small>}
+        </div>}
         <div className="mc-sidebar-footer">
           <div><span className={`mc-health-dot ${fatal ? 'error' : 'online'}`} />{fatal ? t('error.title') : t('status.runtime')}</div>
           {!fatal && <small>{t('status.runningCount', { count: online.length })}</small>}
@@ -135,6 +146,14 @@ export function App() {
           <h2>{t('error.title')}</h2><p>{t('error.text')}</p><code>{fatal}</code><small>{t('error.install')}</small>
           <div><Button kind="primary" onClick={() => { setLoading(true); void loadRoot(); }}>{t('error.retry')}</Button></div>
         </section> : loading ? <section className="mc-panel"><p>{t('common.loading')}</p></section>
+          : desktop && section === 'servers' && server ? <section className="mc-desktop-detail" aria-label={server.name}>
+            <div className="mc-desktop-breadcrumb"><button type="button" onClick={() => setSelected('')}>{t('servers.title')}</button><Icon name="chevron" size={13} /><span>{server.name}</span></div>
+            <DetailHeader server={server} job={pending.find((j) => j.serverId === server.id)} onPower={(a) => void power(server, a)} onEdit={() => setEditOpen(true)} onClose={() => setSelected('')} />
+            <nav className="mc-tabs" aria-label={server.name}>
+              {TABS.map((x) => <button key={x} className={tab === x ? 'active' : ''} aria-current={tab === x ? 'page' : undefined} onClick={() => setTab(x)}>{t(`detail.${x}`)}</button>)}
+            </nav>
+            <ServerTab key={`${server.id}:${tab}`} server={server} tab={tab} run={run} onToast={show} />
+          </section>
           : section === 'servers' ? <section className="mc-panel mc-server-overview">
             <div className="mc-toolbar">
               <input className="mc-input mc-filter" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('servers.search')} aria-label={t('servers.search')} />
@@ -158,9 +177,10 @@ export function App() {
                   : <Resources health={health} servers={servers} />}
       </main>
     </div>
+    {desktop && <footer className="mc-desktop-status" aria-live="polite"><span>{t('servers.summary', { online: online.length, players: playersOnline })}</span><span>{health ? `${t('resources.version')} ${health.version}` : t('common.loading')}</span><button type="button" onClick={() => void loadRoot()}>{t('common.refresh')}</button></footer>}
     {createOpen && <CreateDialog servers={servers} onClose={() => setCreateOpen(false)} run={run}
       onCreated={(s) => { setCreateOpen(false); setSection('servers'); open(s); }} />}
-    {server && <Drawer onClose={() => setSelected('')} label={server.name}>
+    {!desktop && server && <Drawer onClose={() => setSelected('')} label={server.name}>
       <DetailHeader server={server} job={pending.find((j) => j.serverId === server.id)} onPower={(a) => void power(server, a)} onEdit={() => setEditOpen(true)} onClose={() => setSelected('')} />
       <nav className="mc-tabs" aria-label={server.name}>
         {TABS.map((x) => <button key={x} className={tab === x ? 'active' : ''} aria-current={tab === x ? 'page' : undefined} onClick={() => setTab(x)}>{t(`detail.${x}`)}</button>)}
