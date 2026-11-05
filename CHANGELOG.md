@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 - 2026-11-05
+
+- Add a native ErvisiOS workspace with persistent server navigation, an inline console and direct Files, Software, Add-ons, Players, Worlds, Backups and Schedules views.
+- Preserve the Classic page, existing runtime jobs, power controls and error handling.
+- Require Ervisio 0.7.0 or later and build with plugin SDK 0.4.0 (contract 4). No additional server permissions.
+
 ## 0.1.1
 
 * The logo is now the Minecraft grass block, the game's own icon (vector version from Wikimedia Commons, public domain; Minecraft is a trademark of Mojang).
