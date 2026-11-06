@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.1] - 2026-11-06
+
+- Use the shared file chooser for the Java executable when creating or editing a server.
+
+
 ## 0.2.0 - 2026-11-05
 
 - Add a native ErvisiOS workspace with persistent server navigation, an inline console and direct Files, Software, Add-ons, Players, Worlds, Backups and Schedules views.

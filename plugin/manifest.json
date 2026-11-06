@@ -1,8 +1,8 @@
 {
   "id": "minecraft",
   "name": "Minecraft",
-  "version": "0.2.0",
-  "minCore": "0.7.0",
+  "version": "0.2.1",
+  "minCore": "7.0.4",
   "author": "Ervisio team",
   "description": "Manage multiple Java Minecraft servers, console, files, software, add-ons, players, worlds and backups.",
   "homepage": "https://github.com/Ervisio/plugin-minecraft",

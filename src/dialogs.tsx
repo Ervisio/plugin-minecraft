@@ -1,3 +1,4 @@
+import { PathInput } from '@ervisio/plugin-sdk/paths';
 import { useEffect, useState, type FormEvent } from 'react';
 import { enc, errMessage, request, waitJob } from './api';
 import { t } from './i18n';
@@ -117,7 +118,7 @@ export function CreateDialog({ servers, onClose, onCreated, run }: { servers: Se
         </Field>
         <Field label={t('servers.motd')}><input className="mc-input" value={motd} onChange={(e) => setMotd(e.target.value)} maxLength={256} /></Field>
         <Field label={t('servers.seed')}><input className="mc-input" value={seed} onChange={(e) => setSeed(e.target.value)} maxLength={128} /></Field>
-        <Field label={t('servers.java')} hint={t('servers.javaHint')}><input className="mc-input mc-mono" value={java} onChange={(e) => setJava(e.target.value)} placeholder="java" /></Field>
+        <PathInput label={t('servers.java')} hint={t('servers.javaHint')} value={java} onPathChange={setJava} placeholder="java" mono />
         <Field label={t('servers.jvm')} hint={t('servers.jvmHint')}><input className="mc-input mc-mono" value={jvm} onChange={(e) => setJvm(e.target.value)} placeholder="-XX:+UseG1GC" /></Field>
       </div>
       {engine === 'custom' && <Warning>{t('servers.customNote')}</Warning>}
@@ -166,7 +167,7 @@ export function EditDialog({ server, run, onClose, onDeleted }: { server: Server
       <div className="mc-form-grid">
         <Field label={t('servers.port')}><input className="mc-input" type="number" min={1024} max={65535} value={port} disabled={!stopped} onChange={(e) => setPort(Number(e.target.value))} required /></Field>
         <Field label={t('servers.memory')}><input className="mc-input" type="number" min={512} max={131072} step={256} value={memory} disabled={!stopped} onChange={(e) => setMemory(Number(e.target.value))} required /></Field>
-        <Field label={t('servers.java')} hint={t('servers.javaHint')}><input className="mc-input mc-mono" value={java} disabled={!stopped} onChange={(e) => setJava(e.target.value)} placeholder="java" /></Field>
+        <PathInput label={t('servers.java')} hint={t('servers.javaHint')} value={java} disabled={!stopped} onPathChange={setJava} placeholder="java" mono />
         <Field label={t('servers.jvm')} hint={t('servers.jvmHint')}><input className="mc-input mc-mono" value={jvm} disabled={!stopped} onChange={(e) => setJvm(e.target.value)} /></Field>
       </div>
       <label className="mc-check"><input type="checkbox" checked={autostart} onChange={(e) => setAutostart(e.target.checked)} /><span>{t('servers.autostart')}</span></label>
